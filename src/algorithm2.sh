@@ -31,11 +31,11 @@ for value in {100..100}
 do  
     # ResNet18
     python pretrain_model.py -net ResNet18 -dataset Cifar20 -classes 20 -gpu -seed $value
-    # ./cifar20_fullclass_exps.sh $DEVICE $value
+    ./cifar20_fullclass_exps.sh $DEVICE $value
     ./cifar20_subclass_exps.sh $DEVICE $value
 
-    # python pretrain_model.py -net ResNet18 -dataset Cifar100 -classes 100 -gpu -seed $value
-    # ./cifar100_fullclass_exps.sh $DEVICE $value
+    python pretrain_model.py -net ResNet18 -dataset Cifar100 -classes 100 -gpu -seed $value
+    ./cifar100_fullclass_exps.sh $DEVICE $value
 
 
     # # ViT
