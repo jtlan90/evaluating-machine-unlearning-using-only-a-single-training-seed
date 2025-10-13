@@ -1,0 +1,18 @@
+--find-links https://download.pytorch.org/whl/cu121
+torch
+torchvision
+torchaudio
+numpy
+matplotlib
+seaborn
+pandas
+scikit-learn
+tqdm
+jupyter
+ipykernel
+datetime
+wandb
+transformers
+scipy
+tensorboard
+gdown
