@@ -1,4 +1,4 @@
-# Methadological Considerations for Machine Unlearning
+# On the limitation of evaluating machine unlearning using only a single training seed
 
 ## Based on the SSD codebase
 https://github.com/if-loops/selective-synaptic-dampening
