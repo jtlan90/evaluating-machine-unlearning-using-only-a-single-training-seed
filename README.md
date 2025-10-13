@@ -2,7 +2,9 @@
 
 ## Based on the SSD codebase
 https://github.com/if-loops/selective-synaptic-dampening
-This directory contains an implementation of various machine unlearning strategies for deep neural networks, including:
+
+
+Examines the impact of using multiple baseline models for machine unlearning evaluation with implementations for the following machine unlearning methods for deep neural networks, including:
 
 - **Selective Synaptic Dampening (SSD)**
 - **Loss Free Selective Synaptic Dampening (LFSSD)**
