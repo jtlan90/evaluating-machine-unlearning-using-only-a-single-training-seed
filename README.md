@@ -30,5 +30,5 @@ pip install -r requirements.txt
 ## Running Experiments
 
 Bash scripts are provided for running experiments:
-- `algorithm1.sh`: Run Algorith 1: A in the paper
-- `algorithm2.sh`: Run Algorith 2: B in the paper
+- `algorithm1.sh`: Run Algorithm 1: A in the paper
+- `algorithm2.sh`: Run Algorithm 2: B in the paper
