@@ -1,0 +1,137 @@
+====================================================================================================
+PAIRWISE W2 DISTANCES ACROSS PRE-TRAINING SEEDS
+====================================================================================================
+
+Measures: How much does each method's performance change when starting from different pre-trained models?
+Interpretation: Large W2 = method is highly sensitive to pre-training seed choice
+
+
+====================================================================================================
+CLEAN SCENARIO
+====================================================================================================
+
+Perfect Model:
+----------------------------------------------------------------------------------------------------
+  training        Mean W2: 0.002540  Max: 0.007468  Min: 0.000054  [Low sensitivity]
+  retrain         Mean W2: 0.006676  Max: 0.015493  Min: 0.000313  [Low sensitivity]
+  FedRemove       Mean W2: 0.002222  Max: 0.005576  Min: 0.000051  [Low sensitivity]
+  fedEraser       Mean W2: 0.004073  Max: 0.009461  Min: 0.000250  [Low sensitivity]
+  fineTuning      Mean W2: 0.006184  Max: 0.014686  Min: 0.000102  [Low sensitivity]
+  pga             Mean W2: 0.006078  Max: 0.019189  Min: 0.000256  [Low sensitivity]
+
+
+Navigational Model:
+----------------------------------------------------------------------------------------------------
+  training        Mean W2: 0.004353  Max: 0.009807  Min: 0.000128  [Low sensitivity]
+  retrain         Mean W2: 0.005245  Max: 0.012483  Min: 0.000251  [Low sensitivity]
+  FedRemove       Mean W2: 0.004505  Max: 0.010842  Min: 0.000250  [Low sensitivity]
+  fedEraser       Mean W2: 0.004618  Max: 0.012281  Min: 0.000008  [Low sensitivity]
+  fineTuning      Mean W2: 0.004440  Max: 0.010396  Min: 0.000163  [Low sensitivity]
+  pga             Mean W2: 0.004817  Max: 0.013401  Min: 0.000187  [Low sensitivity]
+
+
+Informational Model:
+----------------------------------------------------------------------------------------------------
+  training        Mean W2: 0.003491  Max: 0.011121  Min: 0.000082  [Low sensitivity]
+  retrain         Mean W2: 0.005825  Max: 0.016697  Min: 0.000053  [Low sensitivity]
+  FedRemove       Mean W2: 0.005330  Max: 0.014103  Min: 0.000092  [Low sensitivity]
+  fedEraser       Mean W2: 0.003616  Max: 0.012374  Min: 0.000108  [Low sensitivity]
+  fineTuning      Mean W2: 0.005903  Max: 0.014373  Min: 0.000217  [Low sensitivity]
+  pga             Mean W2: 0.008812  Max: 0.022112  Min: 0.000034  [Low sensitivity]
+
+
+====================================================================================================
+DATA_POISON SCENARIO
+====================================================================================================
+
+Perfect Model:
+----------------------------------------------------------------------------------------------------
+  training        Mean W2: 0.012946  Max: 0.033398  Min: 0.000285  [Moderate sensitivity]
+  retrain         Mean W2: 0.003135  Max: 0.008110  Min: 0.000015  [Low sensitivity]
+  FedRemove       Mean W2: 0.013827  Max: 0.034109  Min: 0.000249  [Moderate sensitivity]
+  fedEraser       Mean W2: 0.004695  Max: 0.011489  Min: 0.000087  [Low sensitivity]
+  fineTuning      Mean W2: 0.004340  Max: 0.010288  Min: 0.000233  [Low sensitivity]
+  pga             Mean W2: 0.006936  Max: 0.017043  Min: 0.000054  [Low sensitivity]
+
+
+Navigational Model:
+----------------------------------------------------------------------------------------------------
+  training        Mean W2: 0.024034  Max: 0.080766  Min: 0.000014  [Moderate sensitivity]
+  retrain         Mean W2: 0.006325  Max: 0.018701  Min: 0.000004  [Low sensitivity]
+  FedRemove       Mean W2: 0.022979  Max: 0.081046  Min: 0.000482  [Moderate sensitivity]
+  fedEraser       Mean W2: 0.004216  Max: 0.010605  Min: 0.000010  [Low sensitivity]
+  fineTuning      Mean W2: 0.006198  Max: 0.013579  Min: 0.000260  [Low sensitivity]
+  pga             Mean W2: 0.006655  Max: 0.015793  Min: 0.000343  [Low sensitivity]
+
+
+Informational Model:
+----------------------------------------------------------------------------------------------------
+  training        Mean W2: 0.024162  Max: 0.079628  Min: 0.001525  [Moderate sensitivity]
+  retrain         Mean W2: 0.008847  Max: 0.020435  Min: 0.000140  [Low sensitivity]
+  FedRemove       Mean W2: 0.023408  Max: 0.081346  Min: 0.000788  [Moderate sensitivity]
+  fedEraser       Mean W2: 0.009235  Max: 0.022081  Min: 0.000259  [Low sensitivity]
+  fineTuning      Mean W2: 0.004775  Max: 0.012572  Min: 0.000270  [Low sensitivity]
+  pga             Mean W2: 0.006345  Max: 0.013975  Min: 0.000383  [Low sensitivity]
+
+
+====================================================================================================
+MODEL_POISON SCENARIO
+====================================================================================================
+
+Perfect Model:
+----------------------------------------------------------------------------------------------------
+  training        Mean W2: 0.047248  Max: 0.137733  Min: 0.002166  [Moderate sensitivity]
+  retrain         Mean W2: 0.003736  Max: 0.010923  Min: 0.000025  [Low sensitivity]
+  FedRemove       Mean W2: 0.047565  Max: 0.137089  Min: 0.000654  [Moderate sensitivity]
+  fedEraser       Mean W2: 0.004392  Max: 0.010368  Min: 0.000107  [Low sensitivity]
+  fineTuning      Mean W2: 0.005159  Max: 0.012719  Min: 0.000350  [Low sensitivity]
+  pga             Mean W2: 0.013476  Max: 0.028924  Min: 0.000101  [Moderate sensitivity]
+
+
+Navigational Model:
+----------------------------------------------------------------------------------------------------
+  training        Mean W2: 0.077005  Max: 0.211946  Min: 0.006352  [HIGH SENSITIVITY ⚠️]
+  retrain         Mean W2: 0.003465  Max: 0.010390  Min: 0.000010  [Low sensitivity]
+  FedRemove       Mean W2: 0.077438  Max: 0.213190  Min: 0.004606  [HIGH SENSITIVITY ⚠️]
+  fedEraser       Mean W2: 0.004916  Max: 0.012912  Min: 0.000264  [Low sensitivity]
+  fineTuning      Mean W2: 0.004455  Max: 0.012303  Min: 0.000171  [Low sensitivity]
+  pga             Mean W2: 0.010106  Max: 0.024903  Min: 0.000855  [Moderate sensitivity]
+
+
+Informational Model:
+----------------------------------------------------------------------------------------------------
+  training        Mean W2: 0.075646  Max: 0.155694  Min: 0.002228  [HIGH SENSITIVITY ⚠️]
+  retrain         Mean W2: 0.005625  Max: 0.018730  Min: 0.000027  [Low sensitivity]
+  FedRemove       Mean W2: 0.076220  Max: 0.159976  Min: 0.004962  [HIGH SENSITIVITY ⚠️]
+  fedEraser       Mean W2: 0.008775  Max: 0.026948  Min: 0.000079  [Low sensitivity]
+  fineTuning      Mean W2: 0.006052  Max: 0.014216  Min: 0.000364  [Low sensitivity]
+  pga             Mean W2: 0.015015  Max: 0.039926  Min: 0.000401  [Moderate sensitivity]
+
+
+====================================================================================================
+SUMMARY: Average W2 Across Models (Mean of Pairwise Distances)
+====================================================================================================
+
+CLEAN:
+  training        0.003462  ✓
+  FedRemove       0.004019  ✓
+  fedEraser       0.004103  ✓
+  fineTuning      0.005509  ✓
+  retrain         0.005915  ✓
+  pga             0.006569  ✓
+
+DATA_POISON:
+  fineTuning      0.005104  ✓
+  fedEraser       0.006049  ✓
+  retrain         0.006102  ✓
+  pga             0.006645  ✓
+  FedRemove       0.020071  ⚠️
+  training        0.020381  ⚠️
+
+MODEL_POISON:
+  retrain         0.004275  ✓
+  fineTuning      0.005222  ✓
+  fedEraser       0.006028  ✓
+  pga             0.012866  ⚠️
+  training        0.066633  🚨
+  FedRemove       0.067074  🚨

@@ -1,6 +1,19 @@
 # Unlearning for Federated Online Learning to Rank
+
 ## News
 - 🔥Our paper has been accepted by SIGIR2025!
+
+## Overview
+
+This repository implements and evaluates machine unlearning methods for Federated Online Learning to Rank (FOLTR). The codebase includes:
+
+- **Training**: Federated learning with multiple clients and click models
+- **Poisoning Scenarios**: Clean, data poisoning, and model poisoning
+- **Unlearning Methods**: retrain, FedRemove, fedEraser, fineTuning, PGA
+- **Variance Analysis**: Two experimental designs to isolate variance sources:
+  - **Algorithm 1**: Fixed pre-training + multiple unlearning runs
+  - **Algorithm 2**: Multiple pre-training runs + matched unlearning runs
+- **Comprehensive Evaluation**: Statistical analysis and visualization of results
 
 ## Download datasets
 In the paper, we use four popular LTR datasets: MQ2007, MSLR-WEB10K, Yahoo! and Istella-S.
@@ -10,6 +23,12 @@ In the paper, we use four popular LTR datasets: MQ2007, MSLR-WEB10K, Yahoo! and 
 - Istella-S can be downloaded from [Instella-S website](https://istella.ai/datasets/letor-dataset/)
 
 After downloading data files, they have to be unpacked within the `./datasets` folder.
+
+**Important:** The MSLR-WEB10K folder should be renamed to `MSLR10K` after unpacking:
+```bash
+cd datasets
+mv MSLR-WEB10K MSLR10K
+```
 
 
 ## Environment Setups
@@ -37,33 +56,58 @@ pip install -r requirements.txt
 
 ### Automated Experiment Scripts
 
-Two main bash scripts are provided for running comprehensive experiments across multiple seeds:
+Two main bash scripts are provided for investigating different sources of variance in machine unlearning:
 
-#### Algorithm 1 (Training Only)
+#### Algorithm 1: Testing Unlearning Variance
 ```bash
 ./algorithm1.sh
 ```
-This script runs federated learning training across multiple seeds (100-105 by default) for:
-- MQ2007 dataset (clean, data_poison, model_poison scenarios)
-- MSLR10K dataset (clean, data_poison, model_poison scenarios)
-- Yahoo and istella-s datasets (optional, commented out by default)
+**Purpose:** Isolate variance from the unlearning process itself
 
-To customize the seed range, edit the `for value in {100..105}` line in `algorithm1.sh`.
+**Design:**
+- Pre-trains **ONE** model with seed 1 (fixed)
+- Runs **10 unlearning experiments** with seeds 100-109 on the SAME pre-trained model
+- All unlearning methods: retrain, FedRemove, fedEraser, fineTuning, pga
+- Datasets: MQ2007, MSLR10K (Yahoo and istella-s optional)
 
-#### Algorithm 2 (Training + Unlearning)
+**Key insight:** If results vary across unlearning seeds, the unlearning method is sensitive to random initialization.
+
+To customize seed ranges, edit `TRAIN_SEED`, `UNLEARN_SEED_START`, and `UNLEARN_SEED_END` in `algorithm1.sh`.
+
+#### Algorithm 2: Testing Pre-training Variance
 ```bash
 ./algorithm2.sh
 ```
-This script runs both training and all unlearning methods for each seed (seed 100 by default):
-- Trains models for each dataset and scenario
-- Applies all unlearning methods: retrain, FedRemove, fedEraser, fineTuning, pga
-- Processes MQ2007 and MSLR10K by default
+**Purpose:** Isolate variance from the pre-training process
 
-To customize, edit the seed range in `algorithm2.sh`.
+**Design:**
+- Pre-trains **10 DIFFERENT** models with seeds 1-10
+- Runs **ONE unlearning experiment** per model using the SAME seed
+- All unlearning methods: retrain, FedRemove, fedEraser, fineTuning, pga
+- Datasets: MQ2007, MSLR10K (Yahoo and istella-s optional)
 
-### Individual Dataset Scripts
+**Key insight:** If results vary across training seeds, pre-training randomness dominates performance.
 
-For more granular control, you can run experiments for individual datasets:
+To customize seed ranges, edit `SEED_START` and `SEED_END` in `algorithm2.sh`.
+
+#### Quick Comparison
+
+| Aspect | Algorithm 1 | Algorithm 2 |
+|--------|-------------|-------------|
+| **Pre-training Seeds** | 1 (fixed) | 1-10 (varies) |
+| **Unlearning Seeds** | 100-109 (varies) | 1-10 (matches training) |
+| **# of Pre-trained Models** | 1 | 10 |
+| **# of Unlearning Runs** | 10 per scenario/method | 1 per scenario/method |
+| **Measures Variance From** | Unlearning process | Pre-training process |
+| **Use Case** | Test unlearning stability | Test pre-training impact |
+
+**Example:**
+- **Algorithm 1**: Train once with seed 1 → Unlearn 10 times (seeds 100-109) → See if unlearning is consistent
+- **Algorithm 2**: Train 10 times (seeds 1-10) → Unlearn once each (matching seeds) → See if pre-training matters
+
+### Individual Dataset Scripts (Legacy)
+
+For manual control, you can run experiments for individual datasets with a single seed:
 
 ```bash
 ./mq2007_exps.sh SEED      # Run all MQ2007 experiments for a given seed
@@ -72,9 +116,9 @@ For more granular control, you can run experiments for individual datasets:
 ./istella_exps.sh SEED     # Run all istella-s experiments for a given seed
 ```
 
-Each dataset script will:
-1. Train models for all scenarios (clean, data_poison, model_poison)
-2. Apply all unlearning methods for each scenario
+Each script uses the **same seed for both training and unlearning** (equivalent to Algorithm 2 behavior for a single seed).
+
+**Note:** These scripts use the legacy `--seed` parameter which works via backward compatibility. For more control over training vs unlearning seeds, use Algorithm 1 or Algorithm 2 scripts, or run `train.py` and `unlearn.py` manually with `--train_seed` and `--unlearn_seed` parameters.
 
 ### Troubleshooting
 
@@ -132,9 +176,15 @@ After training, results will be saved in a `.pkl` file in the specified `save_di
 
 Example file path:
 ```
-../save/MQ2007/1/clean/Perfect_training_state_2000.pkl
+../save/MQ2007/1/clean/Perfect_training_seed1_state_1000.pkl
 ```
-The structure includes the dataset name, fold ID, scenario type, and click model.
+The structure includes the dataset name, fold ID, scenario type, click model, and training seed.
+
+**File Naming Convention:**
+```
+{model}_training_seed{SEED}_state_{iterations}.pkl
+```
+The seed is included in the filename to support running multiple training runs with different seeds.
 
 
 ## Running Federated Unlearning Process
@@ -143,7 +193,7 @@ The structure includes the dataset name, fold ID, scenario type, and click model
 Run the unlearning script with the required method:
 ```bash
 cd runs
-python unlearn.py --unlearn_method retrain
+python unlearn.py --unlearn_method retrain --train_seed 1 --unlearn_seed 100
 ```
 
 ### Complete Unlearning Example
@@ -154,18 +204,26 @@ cd runs
 python unlearn.py \
   --dataset MQ2007 \
   --unlearn_method retrain \
-  --unlearn_num 3 \
+  --train_seed 1 \
+  --unlearn_seed 100 \
   --n_clients 10 \
   --interactions_per_feedback 5 \
   --interactions_budget 50000 \
   --learning_rate 0.1 \
   --update True \
-  --seed 1 \
+  --n_malicious 3 \
   --scenario clean \
   --dataset_root_dir ../datasets \
   --save_dir ../save
 ```
 
+### Important Parameters
+
+- `--train_seed`: Seed of the pre-trained model to load (must match a previously trained model)
+- `--unlearn_seed`: Seed for randomness during unlearning process
+- `--unlearn_method`: Unlearning method to apply (retrain, FedRemove, fedEraser, fineTuning, pga)
+
+**Backward Compatibility:** The old `--seed` parameter still works and will be used for both training and unlearning seeds if `--train_seed` and `--unlearn_seed` are not specified.
 
 ### Unlearning Outputs
 
@@ -173,30 +231,123 @@ After unlearning, results will also be saved in a `.pkl` file in the `save_dir`.
 
 Example file path:
 ```
-../save/MQ2007/1/clean/Perfect_unlearning_FedRemove_2000.pkl
+../save/MQ2007/1/clean/Perfect_training_seed1_unlearning_retrain_seed100_1000.pkl
 ```
 
-The structure includes the dataset name, fold ID, scenario type, click model, and unlearning method.
+**File Naming Convention:**
+```
+{model}_training_seed{TRAIN_SEED}_unlearning_{method}_seed{UNLEARN_SEED}_{iterations}.pkl
+```
+The filename includes both the training seed (which model was loaded) and the unlearning seed (randomness during unlearning).
 
 
 ## Evaluation
-We provide four evaluation metrics: offline NDCG@10, online NDCG@10, Distance Gap, and RelR Difference.
 
-Please note that before evaluation, you need to ensure that the results for each unlearning strategy has been generated.
+We provide comprehensive evaluation scripts that analyze results from both Algorithm 1 and Algorithm 2, showing mean performance and variance across seeds.
 
-To visualize offline performance, you can run the script：
+### Evaluation Scripts
+
+#### For Algorithm 1 Results (Unlearning Variance)
 ```bash
-cd evaluation
-python offline_ndcg.py --dataset MQ2007 
+cd Evaluation
+python evaluate_algorithm1.py --dataset MQ2007 \
+    --train_seed 1 \
+    --unlearn_seed_start 100 \
+    --unlearn_seed_end 109
 ```
 
-To visualize online performance, you can run the script：
+**Outputs:**
+- Plots showing mean NDCG@10 with ±1 std deviation across unlearning seeds
+- Summary statistics (mean, std, min, max) for each unlearning method
+- Files saved to `results/algorithm1/`
+
+#### For Algorithm 2 Results (Pre-training Variance)
 ```bash
-cd evaluation
-python online_ndcg.py --dataset MQ2007
+cd Evaluation
+python evaluate_algorithm2.py --dataset MQ2007 \
+    --seed_start 1 \
+    --seed_end 10
 ```
-To evaluate the RelR Difference and Distance Gap metrics, you need to set the following parameters when running `train.py` and `unlearn.py`:
-`--enable_relr True --scenario clean`. Then, you can obtain the results by loading the corresponding pickle file.
+
+**Outputs:**
+- Plots showing mean NDCG@10 with ±1 std deviation across training seeds
+- Summary statistics for both training and unlearning phases
+- Variance comparison analysis between training and unlearning
+- Files saved to `results/algorithm2/`
+
+### Key Metrics
+
+1. **Offline NDCG@10**: Ranking quality on test set at each epoch
+2. **Online NDCG@10**: Cumulative performance during training/unlearning
+3. **Standard Deviation**: Measures consistency across seeds (lower = more stable)
+4. **RelR Difference**: Relevance Reset metric (requires `--enable_relr True`)
+
+### Understanding Results
+
+- **Narrow variance bands**: Method is stable and consistent
+- **Wide variance bands**: Method is sensitive to random seed
+- **Compare Algorithm 1 vs 2**: Identify whether unlearning or pre-training contributes more variance
+
+For detailed evaluation instructions, see [Evaluation/README_EVALUATION.md](Evaluation/README_EVALUATION.md).
+
+## Quick Start Guide
+
+Here's a complete workflow from setup to evaluation:
+
+### 1. Setup Environment
+```bash
+# Create environment
+./setup_env.sh
+conda activate foltr
+pip install -r requirements.txt
+
+# Fix line endings if needed
+./dos2unix.sh
+```
+
+### 2. Prepare Datasets
+```bash
+# Download datasets (see Download datasets section above)
+# Unpack to ./datasets/ folder
+# Rename MSLR-WEB10K to MSLR10K
+cd datasets
+mv MSLR-WEB10K MSLR10K
+cd ..
+```
+
+### 3. Run Experiments
+
+**Option A: Test Unlearning Variance (Algorithm 1)**
+```bash
+./algorithm1.sh
+# This trains 1 model and runs 10 unlearning experiments
+# Takes several hours depending on hardware
+```
+
+**Option B: Test Pre-training Variance (Algorithm 2)**
+```bash
+./algorithm2.sh
+# This trains 10 models and runs 10 unlearning experiments
+# Takes longer than Algorithm 1
+```
+
+### 4. Evaluate Results
+```bash
+cd Evaluation
+
+# For Algorithm 1 results
+python evaluate_algorithm1.py --dataset MQ2007
+python evaluate_algorithm1.py --dataset MSLR10K
+
+# For Algorithm 2 results
+python evaluate_algorithm2.py --dataset MQ2007
+python evaluate_algorithm2.py --dataset MSLR10K
+```
+
+### 5. Check Results
+- Plots: `Evaluation/results/algorithm1/` or `Evaluation/results/algorithm2/`
+- Statistics: `*_summary.txt` and `*_variance_comparison.txt` files
+- Interpretation guide: [Evaluation/README_EVALUATION.md](Evaluation/README_EVALUATION.md)
 
 ## Supplementary results
 

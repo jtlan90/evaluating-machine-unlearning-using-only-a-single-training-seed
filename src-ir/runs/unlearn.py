@@ -40,7 +40,11 @@ def parse_args():
     parser.add_argument('--update', type=bool, default=True,
                         help='Enable client multi update')
     parser.add_argument('--seed', type=int, default=1,
-                        help='Random seed')
+                        help='Random seed (DEPRECATED: use --train_seed and --unlearn_seed instead)')
+    parser.add_argument('--train_seed', type=int, default=None,
+                        help='Seed of the pre-trained model to load')
+    parser.add_argument('--unlearn_seed', type=int, default=None,
+                        help='Seed for unlearning randomness')
     parser.add_argument('--enable_relr', type=bool, default=False,
                         help='Enable Relevancy Reset (RelR) evaluation')
 
@@ -88,7 +92,7 @@ def get_click_model(dataset, model_name):
         }
     return models.get(model_name)
 
-def get_training_path(args, dataset_params, model_name, fold_id):
+def get_training_path(args, dataset_params, model_name, fold_id, train_seed):
     scenario_dir = {
         'clean': 'clean',
         'data_poison': 'data',
@@ -96,12 +100,13 @@ def get_training_path(args, dataset_params, model_name, fold_id):
     }[args.scenario]
     
     n_iterations = args.interactions_budget // args.n_clients // args.interactions_per_feedback
+    # Use train_seed to load the correct pre-trained model
     if args.enable_relr == True:
-        return f"{args.save_dir}/{args.dataset}/{fold_id + 1}/{scenario_dir}/{model_name}_training_state_{n_iterations}_RelR.pkl"
+        return f"{args.save_dir}/{args.dataset}/{fold_id + 1}/{scenario_dir}/{model_name}_training_seed{train_seed}_state_{n_iterations}_RelR.pkl"
     else:
-        return f"{args.save_dir}/{args.dataset}/{fold_id + 1}/{scenario_dir}/{model_name}_training_state_{n_iterations}.pkl"
+        return f"{args.save_dir}/{args.dataset}/{fold_id + 1}/{scenario_dir}/{model_name}_training_seed{train_seed}_state_{n_iterations}.pkl"
 
-def get_unlearning_path(args, dataset_params, model_name, fold_id):
+def get_unlearning_path(args, dataset_params, model_name, fold_id, train_seed, unlearn_seed):
     scenario_dir = {
         'clean': 'clean',
         'data_poison': 'data',
@@ -110,15 +115,16 @@ def get_unlearning_path(args, dataset_params, model_name, fold_id):
     
     n_iterations = args.interactions_budget // args.n_clients // args.interactions_per_feedback
     base_path = f"{args.save_dir}/{args.dataset}/{fold_id + 1}/{scenario_dir}/{model_name}"
+    # Include both train_seed and unlearn_seed in the output filename
     if args.enable_relr == True:
-        return f"{base_path}_unlearning_{args.unlearn_method}_{n_iterations}_RelR.pkl"
+        return f"{base_path}_training_seed{train_seed}_unlearning_{args.unlearn_method}_seed{unlearn_seed}_{n_iterations}_RelR.pkl"
     else:
-        return f"{base_path}_unlearning_{args.unlearn_method}_{n_iterations}.pkl"
+        return f"{base_path}_training_seed{train_seed}_unlearning_{args.unlearn_method}_seed{unlearn_seed}_{n_iterations}.pkl"
 
-def run_unlearning(args, dataset_params, model_name, fold_id):
+def run_unlearning(args, dataset_params, model_name, fold_id, train_seed, unlearn_seed):
     cache_root = "../datasets/cache"
     os.makedirs(cache_root, exist_ok=True)  
-    training_path = get_training_path(args, dataset_params, model_name, fold_id)
+    training_path = get_training_path(args, dataset_params, model_name, fold_id, train_seed)
     try:
         with open(training_path, 'rb') as f:
             training_result = pickle.load(f)
@@ -146,7 +152,7 @@ def run_unlearning(args, dataset_params, model_name, fold_id):
         "n_clients": args.n_clients,
         "n_malicious": args.n_malicious,
         "interactions_budget": args.interactions_budget,
-        "seed": args.seed,
+        "seed": unlearn_seed,  # Use unlearn_seed for randomness in unlearning
         "interactions_per_feedback": args.interactions_per_feedback,
         "multi_update": args.update,
         "n_features": dataset_params["n_features"],
@@ -168,7 +174,7 @@ def run_unlearning(args, dataset_params, model_name, fold_id):
         enable_relr=args.enable_relr
     )
 
-    unlearning_path = get_unlearning_path(args, dataset_params, model_name, fold_id)
+    unlearning_path = get_unlearning_path(args, dataset_params, model_name, fold_id, train_seed, unlearn_seed)
     os.makedirs(os.path.dirname(unlearning_path), exist_ok=True)
     with open(unlearning_path, 'wb') as f:
         pickle.dump(unlearning_result, f)
@@ -177,6 +183,19 @@ def run_unlearning(args, dataset_params, model_name, fold_id):
 
 if __name__ == "__main__":
     args = parse_args()
+    
+    # Handle backward compatibility: if --seed is used without --train_seed and --unlearn_seed
+    if args.train_seed is None and args.unlearn_seed is None:
+        # Use --seed for both training and unlearning (old behavior)
+        train_seed = args.seed
+        unlearn_seed = args.seed
+        print(f"Using --seed={args.seed} for both training and unlearning (backward compatibility mode)")
+    else:
+        # Use separate seeds (new behavior for Algorithm 1 and 2)
+        train_seed = args.train_seed if args.train_seed is not None else args.seed
+        unlearn_seed = args.unlearn_seed if args.unlearn_seed is not None else args.seed
+        print(f"Using train_seed={train_seed} and unlearn_seed={unlearn_seed}")
+    
     dataset_params = get_dataset_params(args.dataset)
     model_names = ["Perfect", "Navigational", "Informational"]
     
@@ -184,6 +203,7 @@ if __name__ == "__main__":
         for fold_id in range(dataset_params["n_folds"]):
             print(f"\nUnlearning {args.scenario} scenario - {model_name} - Fold {fold_id + 1}")
             print(f"Method: {args.unlearn_method}")
-            run_unlearning(args, dataset_params, model_name, fold_id)
+            print(f"Loading model from train_seed={train_seed}, using unlearn_seed={unlearn_seed}")
+            run_unlearning(args, dataset_params, model_name, fold_id, train_seed, unlearn_seed)
 
 

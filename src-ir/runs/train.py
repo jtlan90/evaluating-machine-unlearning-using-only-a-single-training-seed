@@ -102,10 +102,11 @@ def get_save_path(args, dataset_params, model_name, fold_id):
     os.makedirs(save_dir, exist_ok=True)
     
     n_iterations = args.interactions_budget // args.n_clients // args.interactions_per_feedback
+    # Include training seed in filename to support multiple training runs
     if args.enable_relr == True:
-        return f"{save_dir}/{model_name}_training_state_{n_iterations}_RelR.pkl"
+        return f"{save_dir}/{model_name}_training_seed{args.seed}_state_{n_iterations}_RelR.pkl"
     else:
-        return f"{save_dir}/{model_name}_training_state_{n_iterations}.pkl"
+        return f"{save_dir}/{model_name}_training_seed{args.seed}_state_{n_iterations}.pkl"
 
 def run_training(args, dataset_params, click_model, model_name, fold_id):
     cache_root = "../datasets/cache"

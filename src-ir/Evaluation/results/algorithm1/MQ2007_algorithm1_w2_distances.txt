@@ -1,0 +1,112 @@
+Wasserstein-2 Distance Analysis (Algorithm 1)
+Dataset: MQ2007
+Training seed: 1
+Unlearning seeds: 100-109
+Reference: retrain (gold standard)
+================================================================================
+
+
+CLEAN SCENARIO
+--------------------------------------------------------------------------------
+
+Perfect Model:
+  Method          W2 Distance     Interpretation                
+  retrain         0.000000        Negligible difference         
+  FedRemove       0.002901        Small difference              
+  fedEraser       0.001188        Small difference              
+  fineTuning      0.004826        Small difference              
+  pga             0.001120        Small difference              
+
+Navigational Model:
+  Method          W2 Distance     Interpretation                
+  retrain         0.000000        Negligible difference         
+  FedRemove       0.003313        Small difference              
+  fedEraser       0.003201        Small difference              
+  fineTuning      0.012846        Moderate difference           
+  pga             0.004699        Small difference              
+
+Informational Model:
+  Method          W2 Distance     Interpretation                
+  retrain         0.000000        Negligible difference         
+  FedRemove       0.005770        Small difference              
+  fedEraser       0.004651        Small difference              
+  fineTuning      0.013291        Moderate difference           
+  pga             0.002772        Small difference              
+
+DATA_POISON SCENARIO
+--------------------------------------------------------------------------------
+
+Perfect Model:
+  Method          W2 Distance     Interpretation                
+  retrain         0.000000        Negligible difference         
+  FedRemove       0.026855        Moderate difference           
+  fedEraser       0.002414        Small difference              
+  fineTuning      0.002813        Small difference              
+  pga             0.001792        Small difference              
+
+Navigational Model:
+  Method          W2 Distance     Interpretation                
+  retrain         0.000000        Negligible difference         
+  FedRemove       0.314522        LARGE DIFFERENCE (Failure?)   
+  fedEraser       0.003988        Small difference              
+  fineTuning      0.011217        Moderate difference           
+  pga             0.002036        Small difference              
+
+Informational Model:
+  Method          W2 Distance     Interpretation                
+  retrain         0.000000        Negligible difference         
+  FedRemove       0.351487        LARGE DIFFERENCE (Failure?)   
+  fedEraser       0.003697        Small difference              
+  fineTuning      0.013632        Moderate difference           
+  pga             0.005192        Small difference              
+
+MODEL_POISON SCENARIO
+--------------------------------------------------------------------------------
+
+Perfect Model:
+  Method          W2 Distance     Interpretation                
+  retrain         0.000000        Negligible difference         
+  FedRemove       0.255313        LARGE DIFFERENCE (Failure?)   
+  fedEraser       0.001306        Small difference              
+  fineTuning      0.004646        Small difference              
+  pga             0.017099        Moderate difference           
+
+Navigational Model:
+  Method          W2 Distance     Interpretation                
+  retrain         0.000000        Negligible difference         
+  FedRemove       0.266878        LARGE DIFFERENCE (Failure?)   
+  fedEraser       0.002067        Small difference              
+  fineTuning      0.010379        Moderate difference           
+  pga             0.029743        Moderate difference           
+
+Informational Model:
+  Method          W2 Distance     Interpretation                
+  retrain         0.000000        Negligible difference         
+  FedRemove       0.184678        LARGE DIFFERENCE (Failure?)   
+  fedEraser       0.003041        Small difference              
+  fineTuning      0.014968        Moderate difference           
+  pga             0.018707        Moderate difference           
+
+
+================================================================================
+SUMMARY: Average W2 Distances Across Models
+================================================================================
+
+CLEAN:
+  pga             0.002864       
+  fedEraser       0.003013       
+  FedRemove       0.003995       
+  fineTuning      0.010321       
+
+DATA_POISON:
+  pga             0.003007       
+  fedEraser       0.003366       
+  fineTuning      0.009221       
+  FedRemove       0.230955       
+
+MODEL_POISON:
+  fedEraser       0.002138       
+  fineTuning      0.009998       
+  pga             0.021849       
+  FedRemove       0.235623       
+

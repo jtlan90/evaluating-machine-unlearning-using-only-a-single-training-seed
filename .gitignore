@@ -3,3 +3,5 @@ runs/*
 checkpoint/*
 *.pyc
 wandb/*
+src-ir/datasets/*
+src-ir/save/*

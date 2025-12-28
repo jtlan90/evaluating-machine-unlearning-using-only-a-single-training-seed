@@ -1,0 +1,136 @@
+
+====================================================================================================
+CLEAN SCENARIO
+====================================================================================================
+
+Perfect Model:
+----------------------------------------------------------------------------------------------------
+Method          W2 Distance     Algo1 Mean±Std            Algo2 Mean±Std            Interpretation
+----------------------------------------------------------------------------------------------------
+retrain         0.004651        0.5358±0.0028             0.5395±0.0053             Negligible difference
+FedRemove       0.001757        0.5364±0.0000             0.5363±0.0018             Negligible difference
+fedEraser       0.005974        0.5354±0.0020             0.5412±0.0032             Negligible difference
+fineTuning      0.007778        0.5313±0.0020             0.5383±0.0050             Negligible difference
+pga             0.005680        0.5350±0.0030             0.5401±0.0051             Negligible difference
+
+Navigational Model:
+----------------------------------------------------------------------------------------------------
+Method          W2 Distance     Algo1 Mean±Std            Algo2 Mean±Std            Interpretation
+----------------------------------------------------------------------------------------------------
+retrain         0.001688        0.5320±0.0032             0.5328±0.0042             Negligible difference
+FedRemove       0.004178        0.5310±0.0000             0.5332±0.0036             Negligible difference
+fedEraser       0.003878        0.5351±0.0036             0.5384±0.0038             Negligible difference
+fineTuning      0.001533        0.5447±0.0022             0.5442±0.0035             Negligible difference
+pga             0.003634        0.5344±0.0071             0.5358±0.0039             Negligible difference
+
+Informational Model:
+----------------------------------------------------------------------------------------------------
+Method          W2 Distance     Algo1 Mean±Std            Algo2 Mean±Std            Interpretation
+----------------------------------------------------------------------------------------------------
+retrain         0.002781        0.5291±0.0047             0.5265±0.0047             Negligible difference
+FedRemove       0.004297        0.5325±0.0000             0.5325±0.0043             Negligible difference
+fedEraser       0.008962        0.5247±0.0047             0.5334±0.0031             Negligible difference
+fineTuning      0.001988        0.5423±0.0042             0.5423±0.0047             Negligible difference
+pga             0.005780        0.5268±0.0058             0.5321±0.0070             Negligible difference
+
+
+====================================================================================================
+DATA_POISON SCENARIO
+====================================================================================================
+
+Perfect Model:
+----------------------------------------------------------------------------------------------------
+Method          W2 Distance     Algo1 Mean±Std            Algo2 Mean±Std            Interpretation
+----------------------------------------------------------------------------------------------------
+retrain         0.003461        0.5344±0.0027             0.5377±0.0025             Negligible difference
+FedRemove       0.017046        0.5077±0.0000             0.5206±0.0112             Small difference
+fedEraser       0.005147        0.5363±0.0014             0.5407±0.0038             Negligible difference
+fineTuning      0.007213        0.5318±0.0023             0.5389±0.0035             Negligible difference
+pga             0.007438        0.5340±0.0040             0.5411±0.0056             Negligible difference
+
+Navigational Model:
+----------------------------------------------------------------------------------------------------
+Method          W2 Distance     Algo1 Mean±Std            Algo2 Mean±Std            Interpretation
+----------------------------------------------------------------------------------------------------
+retrain         0.001859        0.5337±0.0043             0.5335±0.0052             Negligible difference
+FedRemove       0.020293        0.2192±0.0000             0.2146±0.0198             Small difference
+fedEraser       0.001958        0.5365±0.0018             0.5364±0.0035             Negligible difference
+fineTuning      0.003647        0.5445±0.0015             0.5433±0.0049             Negligible difference
+pga             0.001961        0.5355±0.0036             0.5357±0.0053             Negligible difference
+
+Informational Model:
+----------------------------------------------------------------------------------------------------
+Method          W2 Distance     Algo1 Mean±Std            Algo2 Mean±Std            Interpretation
+----------------------------------------------------------------------------------------------------
+retrain         0.005385        0.5262±0.0061             0.5310±0.0072             Negligible difference
+FedRemove       0.022254        0.1748±0.0000             0.1797±0.0217             Small difference
+fedEraser       0.003649        0.5293±0.0050             0.5314±0.0073             Negligible difference
+fineTuning      0.004359        0.5397±0.0041             0.5439±0.0038             Negligible difference
+pga             0.002958        0.5303±0.0032             0.5322±0.0050             Negligible difference
+
+
+====================================================================================================
+MODEL_POISON SCENARIO
+====================================================================================================
+
+Perfect Model:
+----------------------------------------------------------------------------------------------------
+Method          W2 Distance     Algo1 Mean±Std            Algo2 Mean±Std            Interpretation
+----------------------------------------------------------------------------------------------------
+retrain         0.004841        0.5350±0.0032             0.5397±0.0031             Negligible difference
+FedRemove       0.039725        0.2797±0.0000             0.2813±0.0397             Small difference
+fedEraser       0.003895        0.5345±0.0023             0.5380±0.0035             Negligible difference
+fineTuning      0.008044        0.5305±0.0020             0.5383±0.0041             Negligible difference
+pga             0.010172        0.5180±0.0024             0.5227±0.0108             Small difference
+
+Navigational Model:
+----------------------------------------------------------------------------------------------------
+Method          W2 Distance     Algo1 Mean±Std            Algo2 Mean±Std            Interpretation
+----------------------------------------------------------------------------------------------------
+retrain         0.001131        0.5340±0.0031             0.5333±0.0029             Negligible difference
+FedRemove       0.067776        0.2671±0.0000             0.2961±0.0613             Moderate difference
+fedEraser       0.002248        0.5358±0.0030             0.5375±0.0039             Negligible difference
+fineTuning      0.001873        0.5443±0.0024             0.5443±0.0037             Negligible difference
+pga             0.017840        0.5042±0.0030             0.5213±0.0080             Small difference
+
+Informational Model:
+----------------------------------------------------------------------------------------------------
+Method          W2 Distance     Algo1 Mean±Std            Algo2 Mean±Std            Interpretation
+----------------------------------------------------------------------------------------------------
+retrain         0.002884        0.5265±0.0063             0.5271±0.0048             Negligible difference
+FedRemove       0.095718        0.3420±0.0000             0.2686±0.0614             Moderate difference
+fedEraser       0.005352        0.5266±0.0046             0.5310±0.0071             Negligible difference
+fineTuning      0.002098        0.5412±0.0033             0.5417±0.0048             Negligible difference
+pga             0.009161        0.5081±0.0031             0.5074±0.0119             Negligible difference
+
+
+====================================================================================================
+SUMMARY: Average W2 Distance Across Models
+====================================================================================================
+
+CLEAN:
+Method          Mean W2         Interpretation
+--------------------------------------------------------------------------------
+retrain         0.003040        ✓ Robust
+FedRemove       0.003411        ✓ Robust
+fineTuning      0.003766        ✓ Robust
+pga             0.005031        ✓ Robust
+fedEraser       0.006272        ✓ Robust
+
+DATA_POISON:
+Method          Mean W2         Interpretation
+--------------------------------------------------------------------------------
+retrain         0.003568        ✓ Robust
+fedEraser       0.003585        ✓ Robust
+pga             0.004119        ✓ Robust
+fineTuning      0.005073        ✓ Robust
+FedRemove       0.019865        ⚠️ Moderate
+
+MODEL_POISON:
+Method          Mean W2         Interpretation
+--------------------------------------------------------------------------------
+retrain         0.002952        ✓ Robust
+fedEraser       0.003832        ✓ Robust
+fineTuning      0.004005        ✓ Robust
+pga             0.012391        ⚠️ Moderate
+FedRemove       0.067740        🚨 High sensitivity
